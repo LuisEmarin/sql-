@@ -1,0 +1,84 @@
+-- 1. List all customers who live in Texas (use JOINs)
+select first_name, last_name, customer.address_id,district
+from customer
+inner join address
+on customer.address_id = address.address_id
+where district in(
+	select  district
+	from address
+	where district = 'Texas');
+-- 	Jennifer , Kim, Richard, Bryan, and Ian live in Texas
+
+-- 2. Get all payments above $6.99 with the Customer's Full Name
+select first_name, last_name, payment.customer_id,amount
+from customer
+join payment
+on customer.customer_id = payment.customer_id
+where amount in (
+	select amount
+	from payment
+	where amount > 6.99)
+
+;
+	
+--  3. Show all customers names who have made at least 4 payments(use subqueries)
+select first_name, last_name, payment.customer_id
+from customer
+full join payment
+on customer.customer_id = payment.customer_id
+where payment_id in(
+ 	select payment_id,count(payment_id)
+ 	from payment
+	group by payment_id
+ 	having count(payment_id)>=4)
+;
+--  nobody has made at least 4 payments
+
+-- 4. List all customers that live in Nepal (use the city table)
+SELECT
+  customer.first_name,
+  customer.last_name,
+  customer.address_id,
+   country
+FROM customer
+JOIN address
+ ON city_id = address.city_id
+JOIN country
+ ON country_id = country.country_id
+where country = 'Nepal';
+
+-- 5. Which staff member (first/last name) had the most transactions?
+select first_name, last_name, staff.staff_id
+from staff
+join rental
+on staff.staff_id = rental.staff_id
+where rental.staff_id in(
+ 	select staff_id
+ 	from rental
+ 	group by staff_id);
+
+-- 6. Which movie title(s) has been rented the most?
+-- select *
+-- from payment;
+
+-- 7.Show all customers who have made a single payment above $6.99 (Use Subqueries)
+select first_name, last_name, customer.customer_id,amount
+from customer
+join payment
+on customer.customer_id = payment.customer_id
+where amount in(
+	select amount
+	from payment
+	where amount > 6.99)
+;
+
+
+-- 8. Which employee gave out the most free rentals?
+select first_name, last_name, payment.staff_id,count(amount )
+from staff
+join payment
+on staff.staff_id = payment.staff_id
+where amount = 0
+group by first_name, last_name, payment.staff_id, amount
+
+;
